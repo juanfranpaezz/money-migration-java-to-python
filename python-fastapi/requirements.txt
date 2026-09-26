@@ -1,0 +1,6 @@
+# The MONEY LOGIC + the VERIFICATION need NOTHING beyond the Python stdlib.
+# These are only for the optional FastAPI HTTP surface (app/api.py) and the test runner.
+fastapi>=0.110
+uvicorn>=0.29
+pydantic>=2.6
+pytest>=8.0

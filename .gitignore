@@ -1,0 +1,23 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+.mypy_cache/
+*.egg-info/
+.venv/
+venv/
+
+# Java
+*.class
+out/
+target/
+
+# build / scratch output
+out/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/

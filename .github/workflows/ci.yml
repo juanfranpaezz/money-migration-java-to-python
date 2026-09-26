@@ -1,0 +1,50 @@
+name: CI
+
+# Proves the case study runs end-to-end on a clean runner (a fresh checkout): the
+# Java reference, the Python parity tests, and the both-ways verification all pass.
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+          cache: maven
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      # --- Java side: compile against the real spring-context and run the reference ---
+      - name: Compile and run the Java reference
+        working-directory: java-spring
+        run: |
+          mvn -B -q compile
+          java -cp target/classes com.example.payments.Demo
+
+      # --- Python side: the parity tests (only pytest is needed) ---
+      - name: Install test dependencies
+        run: python -m pip install --upgrade pip && pip install pytest
+
+      - name: Run the parity tests
+        working-directory: python-fastapi
+        run: python run_demo.py && python -m pytest -q
+
+      # --- The verification: prove the check fires BOTH ways (exit 0 iff proven) ---
+      - name: Run the both-ways verification
+        working-directory: verification
+        run: python verify.py
